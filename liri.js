@@ -38,14 +38,14 @@ var liriCommands = {
 	},
 	'spotify-this-song': function(){
 		if(secondCommand){
-			spotify.search({ type: 'track', query: secondCommand }, function(err, data) {
+			spotify.search({ type: 'track', query: secondCommand, limit: 1}, function(err, data) {
     			if ( err ) {
         			console.log('Error occurred: ' + err);
         			return;
     			}
  
     			console.log(JSON.stringify(data));
-    			console.log(data.artist) 
+    			console.log(data.tracks.name); 
 			});
 		} else {
 			console.log("Please enter a song!");
