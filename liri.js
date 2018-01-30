@@ -3,6 +3,7 @@ require('dotenv').config();
 var request = require('request');
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
+var fs = require('fs');
 
 // requiring keys.js to access api keys
 var keys = require('./keys.js');
@@ -15,8 +16,6 @@ var client = new Twitter(keys.twitter);
 
 // omdb api key
 var omdbAPI = "22ef53e6";
-
-var queryURLomdb = "";
 
 // putting terminal inputs into variables
 var command = process.argv[2];
@@ -31,9 +30,37 @@ var liriCommands = {
 		if(secondCommand){
 			// replacing spaces with plus signs
 			var movieTitle = secondCommand.replace(" ", "+");
-			console.log(movieTitle);
+			// for some reason my api key is not working, so i used trilogy
+			var queryURL = "http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&apikey=trilogy";
+			
+			request(queryURL, function(error, response, body) {
+
+				if (!error && response.statusCode === 200) {
+				  	console.log("Title: " + JSON.parse(body).Title);
+				    console.log("Release: " + JSON.parse(body).Year);
+				    console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+				    console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
+				    console.log("Country: " + JSON.parse(body).Country);
+				    console.log("Language: " + JSON.parse(body).Language);
+				    console.log("Plot: " + JSON.parse(body).Plot);
+				    console.log("Actors: " + JSON.parse(body).Actors);
+				}
+			});
 		} else {
-			console.log("Nope!");
+			var mrNobodyURL = "http://www.omdbapi.com/?t=mr+nobody&y=&plot=short&apikey=trilogy";
+			request(mrNobodyURL, function(error, response, body) {
+	
+				if (!error && response.statusCode === 200) {
+				    console.log("Title: " + JSON.parse(body).Title);
+				    console.log("Release: " + JSON.parse(body).Year);
+				    console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+				    console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
+				    console.log("Country: " + JSON.parse(body).Country);
+				    console.log("Language: " + JSON.parse(body).Language);
+				    console.log("Plot: " + JSON.parse(body).Plot);
+				    console.log("Actors: " + JSON.parse(body).Actors);
+				} 
+			});
 		}
 	},
 	'spotify-this-song': function(){
@@ -45,6 +72,7 @@ var liriCommands = {
     			}
  
     			console.log(JSON.stringify(data));
+    			console.log("Artist: " + data.tracks.artists.name);
     			console.log(data.tracks.name); 
 			});
 		} else {
@@ -54,22 +82,32 @@ var liriCommands = {
 	'my-tweets': function(){
 		client.get('statuses/user_timeline', params, function(error, tweets, response) {
 			if (!error) {
-    			//console.log(tweets);
+    			// for loop to run through the tweets object and grab information to print to console
     			for(var i = 0; i < 20; i++){
     				console.log(tweets[i].text, "--", tweets[i].created_at);
-
     			}
   			}
 		});
-	},
-	'do-what-it-says': function(){
-		if(secondCommand){
-			console.log("Yes!");
-		} else {
-			console.log("Nope!");
-		}
 	}
 }
 
 // calling function from object
-liriCommands[command]();
+if (command === "do-what-it-says"){
+	// reading file to get text from it
+	fs.readFile("random.txt", "utf8", function(error, data) {
+		if (error) {
+			return console.log(error);
+  		}
+  		// splitting data at the comma to grab the individual commands
+  		var dataCommands = data.split(",");
+  		// putting data in variables
+  		var propertyCall = dataCommands[0];
+  		var methodCall = dataCommands[1];
+  		// calling function with the this keyword
+  		secondCommand = methodCall;
+  		liriCommands[propertyCall]();
+
+	});
+} else {
+	liriCommands[command]();
+}
