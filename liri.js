@@ -71,9 +71,10 @@ var liriCommands = {
         			return;
     			}
  
-    			console.log(JSON.stringify(data));
-    			console.log("Artist: " + data.tracks.artists.name);
-    			console.log(data.tracks.name); 
+    			console.log("Artist: " + data.tracks.items[0].artists[0].name);
+    			console.log("Song: " + data.tracks.items[0].name);
+    			console.log("Spotify: " + data.tracks.items[0].external_urls.spotify);
+  				console.log("Album: " + data.tracks.items[0].album.name);
 			});
 		} else {
 			console.log("Please enter a song!");
@@ -88,13 +89,9 @@ var liriCommands = {
     			}
   			}
 		});
-	}
-}
-
-// calling function from object
-if (command === "do-what-it-says"){
-	// reading file to get text from it
-	fs.readFile("random.txt", "utf8", function(error, data) {
+	},
+	'do-what-it-says': function(){
+		fs.readFile("random.txt", "utf8", function(error, data) {
 		if (error) {
 			return console.log(error);
   		}
@@ -106,8 +103,8 @@ if (command === "do-what-it-says"){
   		// calling function with the this keyword
   		secondCommand = methodCall;
   		liriCommands[propertyCall]();
-
-	});
-} else {
-	liriCommands[command]();
+		})
+	}
 }
+
+liriCommands[command]();
