@@ -30,8 +30,8 @@ var liriCommands = {
 		if(secondCommand){
 			// replacing spaces with plus signs
 			var movieTitle = secondCommand.replace(" ", "+");
-			// for some reason my api key is not working, so i used trilogy
-			var queryURL = "http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&apikey=trilogy";
+			// creating query URL
+			var queryURL = "http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&apikey=" + omdbAPI;
 			
 			request(queryURL, function(error, response, body) {
 
@@ -47,7 +47,7 @@ var liriCommands = {
 				}
 			});
 		} else {
-			var mrNobodyURL = "http://www.omdbapi.com/?t=mr+nobody&y=&plot=short&apikey=trilogy";
+			var mrNobodyURL = "http://www.omdbapi.com/?t=mr+nobody&y=&plot=short&apikey=" + omdbAPI;
 			request(mrNobodyURL, function(error, response, body) {
 	
 				if (!error && response.statusCode === 200) {
@@ -70,7 +70,6 @@ var liriCommands = {
         			console.log('Error occurred: ' + err);
         			return;
     			}
- 
     			console.log("Artist: " + data.tracks.items[0].artists[0].name);
     			console.log("Song: " + data.tracks.items[0].name);
     			console.log("Spotify: " + data.tracks.items[0].external_urls.spotify);
@@ -107,4 +106,5 @@ var liriCommands = {
 	}
 }
 
+// calling function through the object from the process.argv inputs
 liriCommands[command]();
