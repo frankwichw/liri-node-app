@@ -1,4 +1,4 @@
-##Liri Node App
+# Liri Node App
 This is a CLI application that takes in commands, and uses APIs from Twitter, Spotify, and OMDB. 
 ## Use
 To use this application, you must clone the repo, then open the directory in your command line. There are several commands you can then enter:
